@@ -1,0 +1,128 @@
+// Funções usadas tanto no sistema quanto na página de assinatura
+const CFG = window.SIGAT_CONFIG;
+const CONFIGURADO = CFG && CFG.SUPABASE_URL.startsWith("https://") && !CFG.SUPABASE_ANON_KEY.startsWith("COLE_");
+const sb = CONFIGURADO ? window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY) : null;
+
+const $ = (id) => document.getElementById(id);
+
+function esc(valor) {
+  return String(valor ?? "").replace(/[&<>"']/g, (c) => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
+function dataBR(iso) {
+  if (!iso) return "";
+  const [a, m, d] = String(iso).slice(0, 10).split("-");
+  return `${d}/${m}/${a}`;
+}
+
+function dataHoraBR(iso) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+}
+
+function mensagem(alvoId, texto, tipo = "erro") {
+  $(alvoId).innerHTML = texto ? `<div class="msg ${tipo}">${esc(texto)}</div>` : "";
+}
+
+// Traduz mensagens de erro comuns do Supabase
+function textoErro(erro) {
+  const m = erro?.message || String(erro);
+  if (/Invalid login credentials/i.test(m)) return "E-mail ou senha incorretos.";
+  if (/Failed to fetch|NetworkError/i.test(m)) return "Sem conexão com o servidor. Verifique a internet.";
+  if (/row-level security/i.test(m)) return "Você não tem permissão para esta ação.";
+  return m;
+}
+
+// ---------- Anexos ----------
+const ANEXO_MAX = 3 * 1024 * 1024; // 3 MB
+const ANEXO_TIPOS = ["application/pdf", "image/jpeg", "image/png"];
+
+function tamanhoBR(bytes) {
+  return bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1).replace(".", ",")} MB`;
+}
+
+// Lê o arquivo escolhido e devolve os dados prontos para gravar (conteúdo em base64)
+function lerAnexo(arquivo) {
+  return new Promise((resolve, reject) => {
+    if (!ANEXO_TIPOS.includes(arquivo.type)) return reject(new Error("Envie um arquivo PDF, JPG ou PNG."));
+    if (arquivo.size > ANEXO_MAX) return reject(new Error(`Arquivo muito grande (${tamanhoBR(arquivo.size)}). O limite é 3 MB.`));
+    const leitor = new FileReader();
+    leitor.onload = () => resolve({
+      nome: arquivo.name.slice(0, 200), tipo: arquivo.type, tamanho: arquivo.size,
+      conteudo: String(leitor.result).split(",")[1],
+    });
+    leitor.onerror = () => reject(new Error("Não foi possível ler o arquivo."));
+    leitor.readAsDataURL(arquivo);
+  });
+}
+
+function baixarAnexo(nome, tipo, base64) {
+  const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+  const url = URL.createObjectURL(new Blob([bytes], { type: tipo }));
+  const a = document.createElement("a");
+  a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+function htmlListaAnexos(anexos, podeRemover) {
+  if (!anexos.length) return '<p class="vazio" style="padding:8px">Nenhum arquivo anexado.</p>';
+  return `<ul class="anexos">${anexos.map((a) => `
+    <li>
+      <span class="anexo-nome">${a.tipo === "application/pdf" ? "📄" : "🖼️"} ${esc(a.nome)} <small>(${tamanhoBR(a.tamanho)})</small></span>
+      <span class="anexo-acoes">
+        <button type="button" class="btn sec pequeno" data-baixar="${a.id}">Baixar</button>
+        ${podeRemover ? `<button type="button" class="btn perigo pequeno" data-remover="${a.id}">Remover</button>` : ""}
+      </span>
+    </li>`).join("")}</ul>`;
+}
+
+// Monta o HTML do termo (usado na tela, na impressão e na página de assinatura)
+function htmlDocumento(t, opcoes = {}) {
+  const assinado = t.status === "assinado";
+  const assinatura = assinado ? `
+    <div class="doc-assinatura">
+      ${t.assinatura_img ? `<img src="${esc(t.assinatura_img)}" alt="Assinatura de ${esc(t.assinado_por)}">` : ""}
+      <div class="linha"></div>
+      <strong>${esc(t.assinado_por)}</strong>
+      <small>Responsável pelo atendimento — assinado eletronicamente em ${esc(dataHoraBR(t.assinado_em))}</small>
+    </div>` : (opcoes.semAssinatura ? "" : `
+    <div class="doc-assinatura">
+      <div style="height:70px"></div><div class="linha"></div>
+      <strong>${esc(t.responsavel_nome)}</strong>
+      <small>Aguardando assinatura do responsável</small>
+    </div>`);
+
+  return `
+  <div class="documento">
+    <div class="doc-cabecalho">
+      <img class="doc-logo" src="img/logo.webp" alt="WP Contabilidade">
+      <div class="doc-empresa">
+        <strong>${esc((CFG?.EMPRESA || "WP Contabilidade").toUpperCase())}</strong>
+        <small>Assessoria, consultoria e soluções empresariais · CNPJ 57.727.107/0001-53</small>
+        <div class="doc-titulo">TERMO DE ATENDIMENTO</div>
+      </div>
+    </div>
+    <p class="doc-numero"><strong>Termo:</strong> ${esc(t.numero)}</p>
+    <div class="doc-grade">
+      <div><span>Data do atendimento</span>${esc(dataBR(t.data_atendimento))}</div>
+      <div><span>Tipo de atendimento</span>${esc(t.tipo)}</div>
+      <div><span>Local</span>${esc(t.local)}</div>
+      <div><span>Setor</span>${esc(t.setor || "—")}</div>
+      <div><span>Responsável</span>${esc(t.responsavel_nome)}</div>
+      <div><span>Servidor que realizou</span>${esc(t.servidor_nome)}</div>
+    </div>
+    <div class="doc-texto"><span>Descrição do serviço realizado</span><p>${esc(t.descricao)}</p></div>
+    <div class="doc-texto"><span>Situação / resolução</span><p>${esc(t.situacao)}</p></div>
+    ${t.anexos?.length ? `<div class="doc-texto"><span>Documentos anexos</span><p>${t.anexos.map((a) => esc(a.nome)).join("\n")}</p></div>` : ""}
+    <p>Declaro, para os devidos fins, que o atendimento acima descrito foi realizado.</p>
+    ${assinatura}
+    <div class="doc-rodape">
+      Documento gerado pelo sistema Termo de Atendimento · WP Contabilidade. Assinatura eletrônica simples, realizada por desenho em tela
+      mediante link exclusivo${assinado ? `, registrada em ${esc(dataHoraBR(t.assinado_em))}` : ""}.
+      Não se trata de assinatura digital com certificado ICP-Brasil.
+    </div>
+  </div>`;
+}

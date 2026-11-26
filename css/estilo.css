@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap');
+/* Identidade WP Contabilidade (wpcontabilidade.vercel.app) */
+:root {
+  --brand: #41469A;
+  --deep: #25295E;
+  --deeper: #1B1E48;
+  --mist: #F5F6FA;
+  --soft: #ECEDF7;
+  --ink: #1A1C33;
+  --text: #606477;
+  --line: #E7E9F0;
+  --line-forte: #C9CCE2;
+  --verde: #1F7A4D;
+  --verde-claro: #E3F4EA;
+  --amarelo: #8A5A00;
+  --amarelo-claro: #FBF0D9;
+  --vermelho: #B4232F;
+  --vermelho-claro: #FBE5E7;
+  --r-sm: 8px;
+  --r: 12px;
+  --r-lg: 16px;
+  --sombra: 0 1px 2px rgba(37,41,94,.04), 0 10px 30px -14px rgba(37,41,94,.16);
+  --titulo: "Manrope", system-ui, sans-serif;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  background: var(--mist);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Cabeçalho ---------- */
+.topo {
+  background: var(--deeper);
+  color: #fff;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.marca { font-family: var(--titulo); font-weight: 800; font-size: 17px; letter-spacing: -.02em; display: flex; align-items: center; gap: 12px; line-height: 1.15; }
+.marca-logo { height: 38px; width: 38px; border-radius: 10px; display: block; }
+.marca small { display: block; font-family: var(--sans); font-weight: 500; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #A9ACD0; margin-top: 2px; }
+.menu { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+.menu button {
+  background: transparent; color: #D6D8EE; border: 0; padding: 8px 14px;
+  border-radius: var(--r-sm); cursor: pointer; font: 500 14px var(--sans); transition: background .2s, color .2s;
+}
+.menu button:hover { background: rgba(255,255,255,.08); color: #fff; }
+.menu button.ativo { background: var(--brand); color: #fff; }
+.usuario { font-size: 13px; display: flex; align-items: center; gap: 10px; color: #D6D8EE; }
+.usuario button { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.3); border-radius: var(--r-sm); padding: 6px 12px; cursor: pointer; font: 500 13px var(--sans); }
+.usuario button:hover { background: rgba(255,255,255,.1); }
+
+/* ---------- Layout ---------- */
+main { max-width: 1040px; margin: 28px auto; padding: 0 16px; }
+.cartao {
+  background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 24px; margin-bottom: 20px; box-shadow: var(--sombra);
+}
+h1 { font-family: var(--titulo); font-weight: 800; letter-spacing: -.02em; font-size: 28px; margin: 0 0 18px; color: var(--ink); }
+h2 { font-family: var(--titulo); font-weight: 700; letter-spacing: -.02em; font-size: 19px; margin: 0 0 14px; color: var(--ink); }
+
+.login { max-width: 400px; margin: 72px auto; padding: 32px; }
+.login .marca { color: var(--ink); text-align: center; margin-bottom: 24px; flex-direction: column; gap: 14px; }
+.login .marca-logo { height: 64px; width: 64px; border-radius: 16px; }
+.login .marca > div { font-size: 24px; }
+.login .marca small { color: var(--text); font-size: 12px; margin-top: 6px; }
+
+/* ---------- Indicadores ---------- */
+.indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.indicador { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--sombra); }
+.indicador span { display: block; color: var(--text); font-size: 13px; font-weight: 500; }
+.indicador strong { font-family: var(--titulo); font-weight: 800; font-size: 32px; letter-spacing: -.02em; color: var(--brand); }
+
+/* ---------- Formulários ---------- */
+label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
+input, select, textarea {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--line-forte); border-radius: var(--r-sm);
+  font: inherit; background: #fff; color: var(--ink); transition: border-color .2s, box-shadow .2s;
+}
+textarea { min-height: 110px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(65,70,154,.18); }
+.campos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.campos .inteiro { grid-column: 1 / -1; }
+@media (max-width: 640px) { .campos { grid-template-columns: 1fr; } }
+
+.botoes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.btn {
+  border: 1px solid #2F3378; color: #fff; padding: 10px 18px;
+  background: linear-gradient(180deg, #5258B0 0%, var(--brand) 55%, #383D8C 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 1px 2px rgba(37,41,94,.3), 0 6px 16px -6px rgba(65,70,154,.55);
+  border-radius: var(--r); cursor: pointer; font: 600 14px var(--sans); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px; transition: transform .2s, box-shadow .2s, background .2s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 2px 4px rgba(37,41,94,.3), 0 12px 24px -8px rgba(65,70,154,.6); }
+.btn:active { transform: translateY(1px); }
+.btn.sec { background: #fff; color: var(--ink); border-color: var(--line-forte); box-shadow: 0 1px 2px rgba(37,41,94,.05); }
+.btn.sec:hover { color: var(--brand); border-color: var(--brand); }
+.btn.verde { background: linear-gradient(180deg, #3A3F92 0%, var(--deep) 100%); border-color: var(--deeper); }
+.btn.perigo { background: #fff; color: var(--vermelho); border-color: #E9B7BC; box-shadow: none; }
+.btn.perigo:hover { background: var(--vermelho-claro); }
+.btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+.btn.pequeno { padding: 6px 12px; font-size: 13px; border-radius: var(--r-sm); }
+
+.msg { padding: 10px 14px; border-radius: var(--r-sm); margin-top: 12px; font-size: 14px; }
+.msg.erro { background: var(--vermelho-claro); color: var(--vermelho); }
+.msg.ok { background: var(--verde-claro); color: var(--verde); }
+.msg.aviso { background: var(--amarelo-claro); color: var(--amarelo); }
+
+/* ---------- Tabelas ---------- */
+.tabela-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--text); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+tr.clicavel { cursor: pointer; }
+tr.clicavel:hover td { background: var(--mist); }
+.vazio { color: var(--text); text-align: center; padding: 24px; }
+
+tr.grupo td { padding-top: 14px; }
+tr.grupo strong { margin-right: 10px; }
+tr.grupo small { color: var(--text); font-size: 12px; white-space: nowrap; }
+tr.grupo-1 td { background: var(--soft); color: var(--deep); font-family: var(--titulo); font-size: 15px; border-bottom: 2px solid var(--brand); }
+tr.grupo-2 td { background: var(--mist); color: var(--ink); font-size: 13px; padding-left: 18px; }
+.selo { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.selo.assinado { background: var(--verde-claro); color: var(--verde); }
+.selo.pendente { background: var(--amarelo-claro); color: var(--amarelo); }
+.selo.inativo { background: var(--vermelho-claro); color: var(--vermelho); }
+
+.filtros { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.filtros input { flex: 1; min-width: 200px; }
+.filtros select { width: auto; }
+
+/* ---------- Documento (termo) ---------- */
+.documento { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: 36px; box-shadow: var(--sombra); }
+.doc-cabecalho {
+  display: flex; align-items: center; gap: 18px;
+  background: var(--deeper); color: #fff; border-radius: var(--r);
+  padding: 16px 20px; margin-bottom: 22px;
+}
+.doc-logo { width: 72px; height: 72px; border-radius: 14px; flex-shrink: 0; }
+.doc-empresa { flex: 1; text-align: center; }
+.doc-empresa strong { display: block; font-family: var(--titulo); font-size: 19px; font-weight: 800; color: #fff; letter-spacing: .02em; margin-bottom: 2px; }
+.doc-empresa small { display: block; font-size: 12px; color: #A9ACD0; line-height: 1.6; }
+.doc-titulo {
+  font-family: var(--titulo); border-top: 1px solid rgba(255,255,255,.2); margin-top: 8px; padding-top: 8px;
+  font-size: 22px; font-weight: 800; color: #fff; letter-spacing: .08em;
+}
+.doc-numero { margin: 0 0 18px; font-size: 15px; }
+.doc-grade { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 24px; margin-bottom: 18px; }
+.doc-grade div span { display: block; font-size: 11px; color: var(--text); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+.doc-texto { margin-bottom: 18px; }
+.doc-texto span { display: block; font-size: 11px; color: var(--text); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin-bottom: 4px; }
+.doc-texto p { margin: 0; white-space: pre-wrap; }
+.doc-assinatura { margin-top: 32px; text-align: center; }
+.doc-assinatura img { max-width: 320px; max-height: 120px; display: block; margin: 0 auto; }
+.doc-assinatura .linha { border-top: 1px solid var(--ink); width: 320px; max-width: 100%; margin: 4px auto 6px; }
+.doc-assinatura small { color: var(--text); display: block; }
+.doc-rodape { margin-top: 28px; font-size: 11px; color: var(--text); border-top: 1px solid var(--line); padding-top: 10px; }
+@media (max-width: 640px) {
+  .doc-grade { grid-template-columns: 1fr; } .documento { padding: 18px; }
+  .doc-cabecalho { flex-direction: column; gap: 8px; padding: 14px; }
+  .doc-logo { width: 56px; height: 56px; }
+  .doc-titulo { font-size: 18px; }
+}
+
+.link-box { display: flex; gap: 8px; margin-top: 8px; }
+.link-box input { font-size: 13px; }
+
+/* ---------- Solicitar intervenção ---------- */
+.intervencao { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.icone-wpp { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ---------- Anexos ---------- */
+.anexos { list-style: none; margin: 0 0 12px; padding: 0; }
+.anexos li { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  padding: 10px 0; border-bottom: 1px solid var(--line); }
+.anexo-nome { word-break: break-all; }
+.anexo-nome small { color: var(--text); }
+.anexo-acoes { display: flex; gap: 6px; }
+.anexar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.anexar input[type=file] { flex: 1; min-width: 200px; }
+
+/* ---------- Quadro de assinatura ---------- */
+.quadro { border: 2px dashed var(--line-forte); border-radius: var(--r); background: var(--mist); touch-action: none; width: 100%; height: 200px; display: block; cursor: crosshair; }
+
+/* ---------- Impressão ---------- */
+@media print {
+  body { background: #fff; font-size: 12pt; }
+  .topo, .nao-imprimir, .botoes { display: none !important; }
+  main { margin: 0; max-width: none; padding: 0; }
+  .cartao, .documento { border: 0; padding: 0; box-shadow: none; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { margin: 18mm; }
+}
+
+/* ---------- Barra no celular ---------- */
+@media (max-width: 640px) {
+  .topo { padding: 10px 12px; gap: 8px; }
+  .topo .marca { order: 1; font-size: 15px; }
+  .marca-logo { height: 32px; width: 32px; border-radius: 8px; }
+  .usuario { order: 2; margin-left: auto; }
+  .usuario span { display: none; }
+  .menu { order: 3; flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; }
+  .menu button { white-space: nowrap; }
+}
