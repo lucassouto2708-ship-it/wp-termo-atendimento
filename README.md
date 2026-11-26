@@ -64,13 +64,9 @@ Só o administrador cadastra pessoas.
 
 1. Menu **Authentication** > **Users** > **Add user** > **Create new user**.
 2. Informe e-mail e senha e marque **Auto Confirm User**.
-3. Volte ao **SQL Editor** e rode (trocando o e-mail):
-
-```sql
-update public.perfis
-set papel = 'admin', nome = 'Seu Nome'
-where email = 'seu-email@exemplo.com';
-```
+3. Pronto: o **primeiro usuário criado já vira administrador** automaticamente.
+   Os próximos entram como servidor e o administrador muda o perfil na aba **Servidores**.
+   (Se precisar promover alguém pelo SQL: `update public.perfis set papel = 'admin' where email = 'email@exemplo.com';`)
 
 ### 5. Criar a função de cadastro de servidores
 

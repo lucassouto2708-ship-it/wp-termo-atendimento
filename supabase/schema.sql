@@ -17,7 +17,8 @@ create table if not exists public.perfis (
 );
 
 -- Cria o perfil automaticamente quando um usuário é criado.
--- Sempre nasce como 'servidor'; só o admin (ou o SQL) promove.
+-- O primeiro usuário do sistema (quando ainda não há administrador) nasce como 'admin';
+-- os demais nascem como 'servidor' e só o admin promove.
 create or replace function public.criar_perfil_novo_usuario()
 returns trigger
 language plpgsql
@@ -25,11 +26,12 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.perfis (id, nome, email)
+  insert into public.perfis (id, nome, email, papel)
   values (
     new.id,
     coalesce(nullif(trim(new.raw_user_meta_data ->> 'nome'), ''), split_part(new.email, '@', 1)),
-    new.email
+    new.email,
+    case when exists (select 1 from public.perfis where papel = 'admin') then 'servidor' else 'admin' end
   )
   on conflict (id) do nothing;
   return new;
